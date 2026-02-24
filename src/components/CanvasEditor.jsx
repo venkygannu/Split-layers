@@ -656,7 +656,7 @@ const CanvasEditor = forwardRef(function CanvasEditor(
           </motion.div>
         )}
       </AnimatePresence>
-      <div ref={canvasWrapperRef} className="relative inline-block max-w-full">
+      <div ref={canvasWrapperRef} className="relative inline-block max-w-full touch-draw">
         <canvas
           ref={canvasRef}
           onPointerDown={handlePointerDown}
@@ -691,7 +691,7 @@ const CanvasEditor = forwardRef(function CanvasEditor(
           style={{
             maxWidth: '100%',
             height: 'auto',
-            maxHeight: '90vh',
+            maxHeight: 'min(85vh, 80dvh)',
             background:
               'repeating-conic-gradient(#e5e7eb 0% 25%, #f3f4f6 0% 50%) 50% / 16px 16px',
           }}

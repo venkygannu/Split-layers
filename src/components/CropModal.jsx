@@ -151,31 +151,31 @@ export function CropModal({ dimensions, imageUrl, onApply, onClose }) {
           exit={{ scale: 0.98, opacity: 0 }}
           transition={{ duration: 0.15 }}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-2xl bg-white shadow-xl border border-white/60 p-4 max-w-[95vw] max-h-[90vh] flex flex-col"
+          className="rounded-2xl bg-white shadow-xl border border-white/60 p-4 max-w-[95vw] max-h-[90dvh] flex flex-col overflow-y-auto"
         >
           <div className="flex items-center justify-between gap-2 mb-3 shrink-0">
             <div className="flex items-center gap-2">
               <Crop className="w-5 h-5 text-violet-500" />
               <span className="font-semibold text-gray-800">Crop image</span>
             </div>
-            <button type="button" onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">
+            <button type="button" onClick={onClose} className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 text-gray-500 touch-manipulation" aria-label="Close">
               <X className="w-5 h-5" />
             </button>
           </div>
           <p className="text-sm text-gray-500 mb-3 shrink-0">
             Drag on the image to select the area to keep. Then click Apply crop.
           </p>
-          <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden rounded-xl bg-gray-100" style={{ maxHeight: '70vh' }}>
-            <div className="relative inline-block max-w-full" style={{ maxHeight: '70vh' }}>
+          <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden rounded-xl bg-gray-100" style={{ maxHeight: 'min(70vh, 60dvh)' }}>
+            <div className="relative inline-block max-w-full touch-draw" style={{ maxHeight: 'min(70vh, 60dvh)' }}>
               <img
                 ref={imgRef}
                 src={imageUrl}
                 alt="Crop preview"
-                className="block max-w-full max-h-[70vh] w-auto h-auto select-none object-contain"
+                className="block max-w-full max-h-[70vh] max-h-[60dvh] w-auto h-auto select-none object-contain"
                 draggable={false}
               />
               <div
-                className="absolute inset-0 cursor-crosshair"
+                className="absolute inset-0 cursor-crosshair touch-draw"
                 onPointerDown={handlePointerDown}
               >
                 {cropRect && scaleX > 0 && scaleY > 0 && (
@@ -239,7 +239,7 @@ export function CropModal({ dimensions, imageUrl, onApply, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100"
+              className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 touch-manipulation"
             >
               Cancel
             </button>
@@ -247,7 +247,7 @@ export function CropModal({ dimensions, imageUrl, onApply, onClose }) {
               type="button"
               onClick={handleApply}
               disabled={!cropRect || cropRect.width < 4 || cropRect.height < 4}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium bg-violet-500 text-white hover:bg-violet-600 disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation"
             >
               Apply crop
             </button>

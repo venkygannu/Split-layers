@@ -52,7 +52,7 @@ function SidebarBtn({ onClick, disabled, label }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+      className="min-h-[44px] px-3 py-2 rounded-lg text-xs font-medium bg-white border border-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all touch-manipulation"
     >
       {label}
     </button>
@@ -117,7 +117,7 @@ function HeroLanding({ onUpload }) {
           <motion.h1
             variants={fadeUp}
             custom={1}
-            className="text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 leading-[1.1] whitespace-nowrap"
+            className="text-3xl sm:text-5xl sm:whitespace-nowrap lg:text-7xl font-extrabold tracking-tight text-gray-900 leading-[1.15] text-balance"
           >
             <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #3b93f7, #1abf50, #2577e5)' }}>Split. Reconstruct. Edit.</span>
           </motion.h1>
@@ -835,11 +835,11 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 py-4 min-h-0 h-[100vh] flex flex-col"
+              className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 py-4 min-h-0 flex flex-col overflow-y-auto lg:h-[100vh] lg:overflow-visible"
             >
-              <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 h-full items-start">
+              <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:h-full items-start min-h-0">
                 {/* Canvas area */}
-                <div className="flex-1 min-w-0 flex flex-col min-h-0">
+                <div className="flex-1 min-w-0 flex flex-col min-h-0 w-full lg:min-h-0">
                   <div className="glass-panel rounded-2xl p-2 sm:p-3 shadow-card">
                     <CanvasEditor
                       ref={canvasEditorRef}
@@ -868,8 +868,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* Sidebar - same height as canvas column, sticky so it stays in view */}
-                <aside className="w-full lg:w-80 xl:w-[340px] flex-shrink-0 flex flex-col min-h-0 lg:h-full lg:sticky lg:top-4">
+                {/* Sidebar - full width on mobile, sticky on desktop */}
+                <aside className="w-full lg:w-80 xl:w-[340px] flex-shrink-0 flex flex-col min-h-0 lg:h-full lg:sticky lg:top-4 pb-[env(safe-area-inset-bottom)]">
                   <div className="flex-1 min-h-0 flex flex-col gap-3 pb-4 lg:overflow-y-auto lg:overflow-x-hidden custom-scrollbar">
                     {/* Split | Reconstruct | Edit + content */}
                     <div className="glass-panel rounded-2xl p-3 shadow-card">
@@ -884,7 +884,7 @@ function App() {
                               key={id}
                               type="button"
                               onClick={() => setEditorMode(id)}
-                              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 text-xs font-medium rounded-lg transition-all ${
+                              className={`flex-1 flex items-center justify-center gap-1.5 min-h-[44px] py-2.5 px-2 text-xs font-medium rounded-lg transition-all touch-manipulation ${
                                 editorMode === id
                                   ? 'bg-white text-blue-600 shadow-sm border border-blue-100'
                                   : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
@@ -912,7 +912,7 @@ function App() {
                                   key={id}
                                   type="button"
                                   onClick={() => setToolMode(id)}
-                                  className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                  className={`flex-1 inline-flex items-center justify-center gap-1.5 min-h-[44px] px-2 py-2.5 rounded-lg text-xs font-medium border transition-all touch-manipulation ${
                                     toolMode === id
                                       ? 'bg-blue-500 text-white border-blue-500 shadow-sm'
                                       : 'bg-white text-gray-600 border-gray-100 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
@@ -1053,7 +1053,7 @@ function App() {
                               type="button"
                               onClick={handleReplaceColor}
                               disabled={!originalImageData || !effectiveColor || isProcessing}
-                              className="mt-3 w-full py-2.5 rounded-xl text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+                              className="mt-3 w-full min-h-[44px] py-2.5 rounded-xl text-sm font-semibold bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm touch-manipulation"
                             >
                               Replace color
                             </button>
@@ -1088,7 +1088,7 @@ function App() {
                                 <input type="range" min={-100} max={100} value={adjustments[key] ?? 0} onChange={(e) => setAdjustments((a) => ({ ...a, [key]: Number(e.target.value) }))} className="w-full" />
                               </div>
                             ))}
-                            <button type="button" onClick={handleAdjust} disabled={!originalImageData || isProcessing} className="w-full py-2 rounded-xl text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 transition-colors">Apply adjustments</button>
+                            <button type="button" onClick={handleAdjust} disabled={!originalImageData || isProcessing} className="w-full min-h-[44px] py-2.5 rounded-xl text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 transition-colors touch-manipulation">Apply adjustments</button>
                           </section>
                         </div>
                       ) : (

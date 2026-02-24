@@ -101,7 +101,7 @@ export function LayersPanel({
             tabIndex={0}
             onClick={() => onSelectFullImage?.()}
             onKeyDown={(e) => e.key === 'Enter' && onSelectFullImage?.()}
-            className={`rounded-xl border transition-all p-2.5 flex items-center gap-2.5 cursor-pointer ${
+            className={`rounded-xl border transition-all p-2.5 min-h-[44px] flex items-center gap-2.5 cursor-pointer touch-manipulation ${
               noLayerSelected
                 ? 'border-blue-300 bg-blue-50/80 shadow-sm'
                 : 'border-gray-100 bg-white/60 hover:border-blue-200 hover:bg-blue-50/30'
@@ -158,7 +158,7 @@ export function LayersPanel({
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, index)}
-                  className={`rounded-xl border transition-colors duration-150 ${
+                  className={`rounded-xl border transition-colors duration-150 min-h-[44px] ${
                     isSelected
                       ? 'border-blue-300 bg-blue-50/70 shadow-sm'
                       : 'border-gray-100 bg-white/60 hover:border-blue-200 hover:bg-blue-50/20'
@@ -177,7 +177,7 @@ export function LayersPanel({
                         else onSelectLayer?.(layer.id);
                       }
                     }}
-                    className="p-2 flex items-center gap-2 cursor-pointer"
+                    className="p-2.5 flex items-center gap-2 cursor-pointer touch-manipulation min-h-[44px]"
                   >
                     {!isReconstruct && onMoveLayerToIndex && (
                       <div className="shrink-0 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing" title="Drag to reorder" onPointerDown={(e) => e.stopPropagation()}>
@@ -269,7 +269,7 @@ export function LayersPanel({
               type="button"
               whileTap={{ scale: 0.97 }}
               onClick={onDownloadAllLayers}
-              className="mt-2 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition-colors"
+              className="mt-2 min-h-[44px] flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 transition-colors touch-manipulation"
             >
               <Download className="w-4 h-4" />
               Download all layers

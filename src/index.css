@@ -10,8 +10,12 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   @apply antialiased text-gray-800;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
   background: #fafbff;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -38,6 +42,13 @@ body {
 canvas {
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* Prevent scroll/zoom when drawing on canvas or crop overlay */
+.touch-draw {
+  touch-action: none;
+  -webkit-touch-callout: none;
 }
 
 .glass-panel {
@@ -70,6 +81,13 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   margin-top: -5px;
 }
+@media (pointer: coarse) {
+  input[type="range"]::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+    margin-top: -7px;
+  }
+}
 
 input[type="range"]::-moz-range-thumb {
   appearance: none;
@@ -80,6 +98,12 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   cursor: pointer;
   border: 0;
+}
+@media (pointer: coarse) {
+  input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+  }
 }
 
 details > summary {
