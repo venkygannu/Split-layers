@@ -23,8 +23,6 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { Toast } from './components/Toast';
 import { useToast } from './hooks/useToast';
 import { CanvasEditor } from './components/CanvasEditor';
-import { ColorPreviewPanel } from './components/ColorPreviewPanel';
-import { ControlsPanel } from './components/ControlsPanel';
 import { LayersPanel } from './components/LayersPanel';
 import { StitchPanel } from './components/StitchPanel';
 import { CropModal } from './components/CropModal';
@@ -286,8 +284,6 @@ function App() {
   const [stitchOpen, setStitchOpen] = useState(false);
   const [paintColor, setPaintColor] = useState({ r: 255, g: 0, b: 0 });
   const [paintOpacity, setPaintOpacity] = useState(100);
-  const [sidebarToolsOpen, setSidebarToolsOpen] = useState(false);
-  const [sidebarImageOpen, setSidebarImageOpen] = useState(false);
   const [adjustments, setAdjustments] = useState({ brightness: 0, contrast: 0, saturation: 0 });
   const [exportFormat, setExportFormat] = useState('png');
   const [exportScale, setExportScale] = useState(100);
@@ -887,16 +883,7 @@ function App() {
                             <button
                               key={id}
                               type="button"
-                              onClick={() => {
-                                setEditorMode(id);
-                                if (id === 'reconstruct') {
-                                  setSidebarToolsOpen(true);
-                                  setSidebarImageOpen(true);
-                                }
-                                if (id === 'edit') {
-                                  setSidebarToolsOpen(true);
-                                }
-                              }}
+                              onClick={() => setEditorMode(id)}
                               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 text-xs font-medium rounded-lg transition-all ${
                                 editorMode === id
                                   ? 'bg-white text-blue-600 shadow-sm border border-blue-100'
@@ -1138,209 +1125,11 @@ function App() {
                             const layer = layers.find((l) => l.id === id);
                             handleSelectLayer(id);
                             setEditorMode('edit');
-                            setSidebarToolsOpen(true);
                             if (layer) setSelectedColor(layer.color);
                           }}
                         />
                       )}
                     </div>
-
-                    {/* Tools & paint */}
-                    <details
-                      open={sidebarToolsOpen}
-                      className="glass-panel rounded-2xl shadow-card overflow-hidden"
-                    >
-                      <summary
-                        className="px-4 py-3 text-sm font-semibold text-gray-700 cursor-pointer flex items-center justify-between hover:bg-white/40 transition-colors"
-                        onClick={(e) => { e.preventDefault(); setSidebarToolsOpen((v) => !v); }}
-                      >
-                        <span>Tools & Paint</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${sidebarToolsOpen ? 'rotate-180' : ''}`} />
-                      </summary>
-                      <div className="px-4 pb-4 pt-1 border-t border-gray-100 space-y-3">
-                        <ColorPreviewPanel selectedColor={effectiveColor} />
-                        <ControlsPanel
-                          viewMode={viewMode}
-                          toolMode={toolMode}
-                          onToolModeChange={setToolMode}
-                          selectedLayerId={selectedLayerId}
-                          selectedColor={effectiveColor}
-                          tolerance={effectiveTolerance}
-                          onToleranceChange={handleToleranceChange}
-                          onDownload={handleDownload}
-                          onReset={handleReset}
-                          onReplaceImage={() => fileInputRef.current?.click()}
-                          imageDimensions={dimensions}
-                          hasImage={hasImage}
-                          isProcessing={isProcessing}
-                          highlightOn={highlightOn}
-                          onHighlightToggle={() => setHighlightOn((v) => !v)}
-                          brushSize={brushSize}
-                          onBrushSizeChange={setBrushSize}
-                          paintColor={paintColor}
-                          onPaintColorChange={setPaintColor}
-                          paintOpacity={paintOpacity}
-                          onPaintOpacityChange={setPaintOpacity}
-                          onClearPaint={handleClearPaint}
-                          onSamplePaintColor={() => effectiveColor && setPaintColor(effectiveColor)}
-                          exportFormat={exportFormat}
-                        />
-                      </div>
-                    </details>
-
-                    {/* Image & export (hidden when using Edit panel) */}
-                    {editorMode !== 'edit' && (
-                      <details
-                        open={sidebarImageOpen}
-                        className="glass-panel rounded-2xl shadow-card overflow-hidden"
-                      >
-                        <summary
-                          className="px-4 py-3 text-sm font-semibold text-gray-700 cursor-pointer flex items-center justify-between hover:bg-white/40 transition-colors"
-                          onClick={(e) => { e.preventDefault(); setSidebarImageOpen((v) => !v); }}
-                        >
-                          <span>Image & Export</span>
-                          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${sidebarImageOpen ? 'rotate-180' : ''}`} />
-                        </summary>
-                        <div className="px-4 pb-4 pt-1 border-t border-gray-100 space-y-4">
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">History</h3>
-                          <div className="flex gap-2">
-                            <SidebarBtn onClick={handleUndo} disabled={!history.canUndo || isProcessing} label="Undo" />
-                            <SidebarBtn onClick={handleRedo} disabled={!history.canRedo || isProcessing} label="Redo" />
-                          </div>
-                        </section>
-                        {hasImage && layers.length > 0 && (
-                          <section>
-                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Export</h3>
-                            <SidebarBtn onClick={handleExportCSV} disabled={isProcessing} label="Export CSV" />
-                          </section>
-                        )}
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Transform</h3>
-                          <div className="flex flex-wrap gap-1.5">
-                            <SidebarBtn onClick={() => handleRotate(90)} disabled={!dimensions || isProcessing} label="90° CW" />
-                            <SidebarBtn onClick={() => handleRotate(-90)} disabled={!dimensions || isProcessing} label="90° CCW" />
-                            <SidebarBtn onClick={() => handleFlip(true, false)} disabled={!dimensions || isProcessing} label="Flip H" />
-                            <SidebarBtn onClick={() => handleFlip(false, true)} disabled={!dimensions || isProcessing} label="Flip V" />
-                            <SidebarBtn onClick={() => setCropModalOpen(true)} disabled={!dimensions || isProcessing} label="Crop" />
-                            <SidebarBtn onClick={handleInvert} disabled={!originalImageData || isProcessing} label="Invert" />
-                          </div>
-                        </section>
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Adjustments</h3>
-                          {['brightness', 'contrast', 'saturation'].map((key) => (
-                            <div key={key} className="mb-2.5">
-                              <div className="flex justify-between text-xs text-gray-500 mb-1">
-                                <span className="capitalize">{key}</span>
-                                <span className="font-mono text-blue-600">{adjustments[key] ?? 0}</span>
-                              </div>
-                              <input
-                                type="range"
-                                min={-100}
-                                max={100}
-                                value={adjustments[key] ?? 0}
-                                onChange={(e) => setAdjustments((a) => ({ ...a, [key]: Number(e.target.value) }))}
-                                className="w-full"
-                              />
-                            </div>
-                          ))}
-                          <button
-                            type="button"
-                            onClick={handleAdjust}
-                            disabled={!originalImageData || isProcessing}
-                            className="w-full py-2 rounded-xl text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 transition-colors"
-                          >
-                            Apply adjustments
-                          </button>
-                        </section>
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Replace Color</h3>
-                          <div className="flex items-center gap-2 mb-2">
-                            <div
-                              className="w-8 h-8 rounded-lg border border-gray-100 shrink-0"
-                              style={{ backgroundColor: effectiveColor ? `rgb(${effectiveColor.r},${effectiveColor.g},${effectiveColor.b})` : '#ddd' }}
-                              title="From (picked)"
-                            />
-                            <ArrowRight className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                            <input
-                              type="color"
-                              value={`#${[replaceToColor.r, replaceToColor.g, replaceToColor.b].map((x) => Math.round(x).toString(16).padStart(2, '0')).join('')}`}
-                              onChange={(e) => {
-                                const hex = e.target.value.slice(1);
-                                setReplaceToColor({
-                                  r: parseInt(hex.slice(0, 2), 16),
-                                  g: parseInt(hex.slice(2, 4), 16),
-                                  b: parseInt(hex.slice(4, 6), 16),
-                                });
-                              }}
-                              className="w-8 h-8 rounded-lg border border-gray-100 cursor-pointer"
-                            />
-                          </div>
-                          <div className="mb-2">
-                            <label className="flex justify-between text-xs text-gray-500 mb-1">
-                              <span>Tolerance</span>
-                              <span className="font-mono text-blue-600">{replaceTolerance}</span>
-                            </label>
-                            <input
-                              type="range" min={0} max={100}
-                              value={replaceTolerance}
-                              onChange={(e) => setReplaceTolerance(Number(e.target.value))}
-                              className="w-full"
-                            />
-                          </div>
-                          <button
-                            type="button"
-                            onClick={handleReplaceColor}
-                            disabled={!originalImageData || isProcessing}
-                            className="w-full py-2 rounded-xl text-xs font-medium bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-40 transition-colors"
-                          >
-                            Replace color
-                          </button>
-                        </section>
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Export</h3>
-                          <div className="flex gap-2 items-center flex-wrap">
-                            <select
-                              value={exportFormat}
-                              onChange={(e) => setExportFormat(e.target.value)}
-                              className="px-2.5 py-1.5 rounded-lg border border-gray-100 bg-white text-xs"
-                            >
-                              <option value="png">PNG</option>
-                              <option value="jpeg">JPEG</option>
-                            </select>
-                            <select
-                              value={exportScale}
-                              onChange={(e) => setExportScale(Number(e.target.value))}
-                              className="px-2.5 py-1.5 rounded-lg border border-gray-100 bg-white text-xs"
-                            >
-                              <option value={50}>50%</option>
-                              <option value={100}>100%</option>
-                              <option value={200}>200%</option>
-                            </select>
-                          </div>
-                        </section>
-                        <section>
-                          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Zoom</h3>
-                          <div className="flex gap-1.5">
-                            {[50, 100, 150, 200].map((pct) => (
-                              <button
-                                key={pct}
-                                type="button"
-                                onClick={() => setZoom(pct)}
-                                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                                  zoom === pct
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-white border border-gray-100 text-gray-500 hover:bg-blue-50 hover:text-blue-600'
-                                }`}
-                              >
-                                {pct}%
-                              </button>
-                            ))}
-                          </div>
-                        </section>
-                      </div>
-                    </details>
-                    )}
                   </div>
                 </aside>
               </div>
